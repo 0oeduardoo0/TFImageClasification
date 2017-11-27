@@ -38,6 +38,8 @@ flags.DEFINE_integer("validation_size", 20, "Porcentaje de datos usados para la 
 flags.DEFINE_integer("accuracy_target", 90, "Precision que se busca para el modelo")
 flags.DEFINE_string("model", None, "Nombre del modelo a entrenar")
 
+FLAGS(sys.argv)
+
 if not FLAGS.model:
 	print "[!!] Indique un nombre para el modelo"
 
