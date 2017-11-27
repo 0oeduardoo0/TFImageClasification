@@ -6,25 +6,37 @@ from datetime import timedelta
 import math
 import random
 import numpy as np
+import sys
 
-#Adding Seed so that random initialization is consistent
 from numpy.random import seed
 seed(1)
 from tensorflow import set_random_seed
 set_random_seed(2)
 
+if sys.argv[1] == "--help":
+    print "TensorFlow Image Clasification Utility"
+    print ""
+    print "Uso:"
+    print ""
+    print "    python train.py --model=<NOMBRE_DEL_MODELO>"
+    print ""
+    print "Parametros opcionales:"
+    print ""
+    print "    --accuracy_target=<ACCURACY>    | Precision que desea que el modelo alcance"
+    print "                                      default: 90"
+    print "    --validation_size=<PERCENT>     | Porcentaje de los datos usados para validacion"
+    print "                                      default: 20"
+    print "    --batch=<SIZE>                  | Tamanio del batch de entrenamiento"
+    print "                                      default: 300"
+    exit()
+
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
-flags.DEFINE_string("dataset", None, "Directorio del dataset")
 flags.DEFINE_integer("batch", 300, "Tamanio del batch de entrenamiento")
 flags.DEFINE_integer("validation_size", 20, "Porcentaje de datos usados para la validacion")
-flags.DEFINE_string("accuracy_target", 90, "Precision que se busca para el modelo")
+flags.DEFINE_integer("accuracy_target", 90, "Precision que se busca para el modelo")
 flags.DEFINE_string("model", None, "Nombre del modelo a entrenar")
-
-if not FLAGS.dataset:
-	print "[!!] No se ha especificado el dataset"
-	exit()
 
 if not FLAGS.model:
 	print "[!!] Indique un nombre para el modelo"
@@ -33,7 +45,7 @@ img_size = 128
 num_channels = 3
 batch_size = FLAGS.batch
 
-dataset_train = "%s/dataset_train" %(FLAGS.dataset)
+dataset_train = "%s/dataset_train" %(FLAGS.model)
 
 classes = []
 
@@ -209,6 +221,10 @@ def show_progress(epoch, iteration, feed_dict_train, feed_dict_validate, val_los
 
 saver = tf.train.Saver()
 
+print ""
+print ""
+print "[i] Iniciando entrenamiento"
+
 def train(accuracy_target):
     
     i = 0
@@ -233,11 +249,11 @@ def train(accuracy_target):
         show_progress(epoch, (i + 1) * batch_size, feed_dict_tr, feed_dict_val, val_loss)
 
         if int(val_acc) >= int(accuracy_target):
-        	saver.save(session, '%s/%s-model' %(FLAGS.dataset, FLAGS.model)) 
+        	saver.save(session, '%s/%s-model' %(FLAGS.model, FLAGS.model)) 
         	break
 
         if i % int(data.train.num_examples/batch_size) == 0:
-            saver.save(session, '%s/%s-model' %(FLAGS.dataset, FLAGS.model))
+            saver.save(session, '%s/%s-model' %(FLAGS.model, FLAGS.model))
 
         i += 1
 
