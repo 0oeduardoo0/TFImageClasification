@@ -10,6 +10,8 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string("model", None, "Nombre del modelo de inferencia")
 flags.DEFINE_string("target", None, "Direccion al archivo de entrada")
 
+FLAGS(sys.argv)
+
 if not FLAGS.model:
 	print "[!!] Falta modelo de inferencia"
 	exit()
